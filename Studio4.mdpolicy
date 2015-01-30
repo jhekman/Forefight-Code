@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PolicySet name="Studio4">
+  <StandardHeader>
+    <Text>
+ ${FileName}
+ 
+ Author:
+      ${AuthorName} &lt;${AuthorEmail}&gt;
+
+ Copyright (c) ${Year} Studio4 Entertainment
+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+</Text>
+    <IncludeInNewFiles>True</IncludeInNewFiles>
+  </StandardHeader>
+  <DotNetNamingPolicy>
+    <DirectoryNamespaceAssociation>PrefixedHierarchical</DirectoryNamespaceAssociation>
+    <ResourceNamePolicy>FileName</ResourceNamePolicy>
+  </DotNetNamingPolicy>
+  <TextStylePolicy inheritsSet="VisualStudio" inheritsScope="text/plain" scope="application/xml">
+    <FileWidth>120</FileWidth>
+    <TabsToSpaces>False</TabsToSpaces>
+  </TextStylePolicy>
+  <XmlFormattingPolicy inheritsSet="Mono" inheritsScope="application/xml" scope="application/xml" />
+  <TextStylePolicy inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/plain">
+    <FileWidth>120</FileWidth>
+    <TabsToSpaces>False</TabsToSpaces>
+  </TextStylePolicy>
+  <TextStylePolicy inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/x-csharp">
+    <FileWidth>120</FileWidth>
+    <TabsToSpaces>False</TabsToSpaces>
+  </TextStylePolicy>
+  <CSharpFormattingPolicy inheritsSet="Mono" inheritsScope="text/x-csharp" scope="text/x-csharp">
+    <NamespaceBraceStyle>EndOfLine</NamespaceBraceStyle>
+    <ClassBraceStyle>EndOfLine</ClassBraceStyle>
+    <InterfaceBraceStyle>EndOfLine</InterfaceBraceStyle>
+    <StructBraceStyle>EndOfLine</StructBraceStyle>
+    <EnumBraceStyle>EndOfLine</EnumBraceStyle>
+    <MethodBraceStyle>EndOfLineWithoutSpace</MethodBraceStyle>
+    <AnonymousMethodBraceStyle>EndOfLineWithoutSpace</AnonymousMethodBraceStyle>
+    <ConstructorBraceStyle>EndOfLineWithoutSpace</ConstructorBraceStyle>
+    <DestructorBraceStyle>EndOfLineWithoutSpace</DestructorBraceStyle>
+    <ElseNewLinePlacement>NewLine</ElseNewLinePlacement>
+    <ElseIfNewLinePlacement>SameLine</ElseIfNewLinePlacement>
+    <BeforeMethodCallParentheses>False</BeforeMethodCallParentheses>
+    <AfterDelegateDeclarationParameterComma>True</AfterDelegateDeclarationParameterComma>
+    <NewParentheses>False</NewParentheses>
+    <SpacesBeforeBrackets>False</SpacesBeforeBrackets>
+    <SpacesAfterTypecast>True</SpacesAfterTypecast>
+  </CSharpFormattingPolicy>
+</PolicySet>
