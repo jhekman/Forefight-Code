@@ -29,6 +29,10 @@ using BaseGame.Entity;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
+
+//Derek is here.
+
+
 namespace BaseGame {
 	public class GameView : GameWindow {
 		GameWorld world;
