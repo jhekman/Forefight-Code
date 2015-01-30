@@ -30,7 +30,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 
 
-//Derek is here.
+//Tim is now here
 
 
 namespace BaseGame {
