@@ -20,7 +20,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 //
-//Trevor
+
 using System;
 using System.Drawing;
 using OpenTK;
@@ -43,7 +43,7 @@ namespace BaseGame {
 			world.Dispose();
 			view.Dispose();
 		}
-		//Timothy
+
 		public static void Main (string[] args){
 			using (Program p = new Program()) {
 				p.view.Run();
