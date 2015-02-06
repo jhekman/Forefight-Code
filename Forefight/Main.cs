@@ -43,7 +43,7 @@ namespace BaseGame {
 			world.Dispose();
 			view.Dispose();
 		}
-
+		//Timothy
 		public static void Main (string[] args){
 			using (Program p = new Program()) {
 				p.view.Run();
