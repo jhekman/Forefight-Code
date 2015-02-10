@@ -36,7 +36,6 @@
     <Compile Include="GameView.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="Stage\EmptyClass.cs" />
     <Compile Include="Stage\Floor.cs" />
     <Compile Include="Stage\Game.cs" />
     <Compile Include="Stage\KeyRoom.cs" />
@@ -56,6 +55,7 @@
     <Compile Include="Entity\Pool.cs" />
     <Compile Include="Entity\Projectile.cs" />
     <Compile Include="Drawing\Shapes.cs" />
+    <Compile Include="Entity\Skeleton.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Stage\" />

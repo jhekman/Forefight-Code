@@ -1,7 +1,5 @@
 //
 //  Enemy.cs
-//
-//  Author:
 //       Timothy Oltjenbruns <timothyolt@gmail.com>
 //
 //  Copyright (c) 2014 Studio4 Entertainment
@@ -26,31 +24,46 @@ using BaseGame.Drawing;
 
 namespace BaseGame.Entity {
 	public class Enemy : Entity {
-		Player target;
+		protected Player target;
 		Vector2 vel;
-		int radius = 16; // used for hitbox
-		int speed = 60;
+		int radius; // used for hitbox
+		int speed;
+		private bool _dead;
 
 		public Enemy (GameView view, Vector2 position) : base(view, position){
 			target = view.Player;
+			radius = 16;
+			speed = 120;
+			_dead = false;
 		}
 
 		public Enemy (GameView view, Vector2 position, int radius) : base(view, position){
 			target = view.Player;
 			this.radius = radius;
+			speed = 5000 / (radius + 15);
+			_dead = false;
 		}
 
-		public int getRadius() {
+		public int getRadius (){
 			return radius;
 		}
 
-		public void die() {
-			View.Enemies.Remove(this);
-			View.Effects.Add(new Boom(View, Position, radius * 2));
+		public bool dead {
+			get { return _dead;}
+			set {
+				_dead = true;
+				View.Enemies.Remove(this);
+				View.Effects.Add(new Boom(View, Position, radius * 2));
+				//				if (radius / 4 > 3) {
+				//					int radi = radius / 4;
+				//					View.Enemies.Add(new Enemy(View, Position + new Vector2(GameView.rand.Next(-radius, radius + 1), GameView.rand.Next(-radius, radius + 1)), radi));
+				//					View.Enemies.Add(new Enemy(View, Position + new Vector2(GameView.rand.Next(-radius, radius + 1), GameView.rand.Next(-radius, radius + 1)), radi));
+				//				}
+			}
 		}
 
 		public override void draw (double delta){
-			Shapes.DrawCircle(Position.X + Velocity.X, Position.Y + Velocity.Y, 8, 16, Color.Red);
+			//Shapes.DrawCircle(Position.X + Velocity.X, Position.Y + Velocity.Y, 8, 16, Color.Red);
 			Shapes.DrawCircle(Position.X, Position.Y, radius, 32, Color.Blue);
 		}
 
@@ -66,4 +79,3 @@ namespace BaseGame.Entity {
 		}
 	}
 }
-
