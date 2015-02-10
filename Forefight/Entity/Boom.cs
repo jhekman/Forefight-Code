@@ -23,9 +23,9 @@
 using System;
 using System.Drawing;
 using OpenTK;
-using BaseGame.Drawing;
+using Forefight.Drawing;
 
-namespace BaseGame.Entity {
+namespace Forefight.Entity {
 	public class Boom : Entity{
 		int boomRadius;
 		int boom = 0;

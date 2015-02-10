@@ -56,6 +56,7 @@
     <Compile Include="Entity\Projectile.cs" />
     <Compile Include="Drawing\Shapes.cs" />
     <Compile Include="Entity\Skeleton.cs" />
+    <Compile Include="Hud.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Stage\" />

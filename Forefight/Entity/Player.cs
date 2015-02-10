@@ -23,12 +23,12 @@
 using System.Drawing;
 using OpenTK;
 using OpenTK.Input;
-using BaseGame.Drawing;
+using Forefight.Drawing;
 using System.Collections.Generic;
 using System;
 using OpenTK.Graphics.OpenGL;
 
-namespace BaseGame.Entity {
+namespace Forefight.Entity {
 	public class Player : Entity {
 		public enum Type {
 			FIREBALL = 0,
@@ -44,7 +44,8 @@ namespace BaseGame.Entity {
 		private const int coolDownTime = 40; // Change this value to change cooldown
 		private int coolDown = 0; // Do not change this value
 		private int speed = 240;
-		private int maxHP = 10;
+		private const int maxHP = 20;
+		private int HP;
 		private Color playerColor = Color.Green; // Color changes when on cooldown
 		private Vector2 target;
 		private Enemy targetEnemy;
@@ -54,6 +55,7 @@ namespace BaseGame.Entity {
 			target = Vector2.Zero;
 			targetEnemy = null;
 			attacking = false;
+			HP = maxHP;
 		}
 
 		public Vector2 Target {
@@ -67,13 +69,17 @@ namespace BaseGame.Entity {
 		}
 
 		public void takeHit (int damage) {
-			maxHP -= damage;
-			if (maxHP <= 0)
+			HP -= damage;
+			if (HP <= 0)
 				die();
 		}
 
 		public void die() { // Player Dies
 			View.Effects.Add(new Boom(View, Position, 500)); // Just for now 
+		}
+
+		public float getHealthRatio() {
+			return (float) HP / maxHP;
 		}
 
 		public override void update (double delta){

@@ -2,12 +2,13 @@ using System;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 
-namespace BaseGame.Drawing {
+namespace Forefight.Drawing {
 	public static class Shapes {
 		public static void DrawCircle (float x, float y, float radius, int segments, Color color){
 			// http://slabode.exofire.net/circle_draw.shtml
 			GL.Color3(color);
 
+			GL.LineWidth (4);
 			GL.Begin(PrimitiveType.LineLoop);
 
 			for (int i = 0; i < segments; i++) {
@@ -23,6 +24,7 @@ namespace BaseGame.Drawing {
 		public static void DrawLine (float x1, float y1, float x2, float y2, Color color){
 			GL.Color3(color);
 
+			GL.LineWidth (1);
 			GL.Begin(PrimitiveType.Lines);
 			GL.Vertex2(x1, y1);
 			GL.Vertex2(x2, y2);

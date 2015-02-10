@@ -1,10 +1,10 @@
 ﻿using System;
 using OpenTK;
 using System.Collections.Generic;
-using BaseGame;
-using BaseGame.Entity;
+using Forefight;
+using Forefight.Entity;
 
-namespace BaseGame.Stage {
+namespace Forefight.Stage {
 	public class Room {
 		public enum RoomType {
 			BIG_ROOM,

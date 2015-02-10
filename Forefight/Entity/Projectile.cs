@@ -22,10 +22,10 @@
 //
 using System;
 using OpenTK;
-using BaseGame.Drawing;
+using Forefight.Drawing;
 using System.Drawing;
 
-namespace BaseGame.Entity {
+namespace Forefight.Entity {
 	public class Projectile : Entity {
 		private const int radius = 8;
 		private const int speed = 240;

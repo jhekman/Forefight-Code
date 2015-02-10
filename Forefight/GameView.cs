@@ -25,17 +25,18 @@ using OpenTK;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
-using BaseGame.Entity;
+using Forefight.Entity;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
-namespace BaseGame {
+namespace Forefight {
 	public class GameView : GameWindow {
 		GameWorld world;
 		readonly Player player;
 		readonly List<Enemy> enemies;
 		readonly List<Projectile> projectiles;
 		readonly List<Boom> effects;
+		readonly Hud hud;
 		double spawnTime;
 		private KeyboardState previousKeys, keys;
 		public static Random rand = new Random();
@@ -51,6 +52,7 @@ namespace BaseGame {
 			enemies = new List<Enemy>();
 			projectiles = new List<Projectile>();
 			effects = new List<Boom>();
+			hud = new Hud (this);
 			keys = OpenTK.Input.Keyboard.GetState();
 
 			spawnTime = 0;
@@ -106,16 +108,17 @@ namespace BaseGame {
 			float ydelta = Mouse.Y - Player.Position.Y;
 			//int zdelta = newMouse.Wheel - oldMouse.Wheel;
 
-			//Enemy handling
-			int posx = rand.Next(0, this.Width);
-			int posy = rand.Next(0, this.Height);
+			//Enemy spawning for now
+			int posx = rand.Next(200, -200 + this.Width);
+			int posy = rand.Next(200, -200 + this.Height);
 
 			spawnTime += e.Time;
-			if (enemies.Count < 1 && spawnTime >= 4) {
+			if (enemies.Count < 3 && spawnTime >= 3) {
 				spawnTime = 0;
-				enemies.Add(new Skeleton(this, new Vector2(400, 400)));
+				enemies.Add(new Skeleton(this, new Vector2(posx, posy)));
 			}
 
+			//Updating everything
 			foreach (Enemy enemy in enemies) {
 				enemy.update(e.Time);
 			}
@@ -125,6 +128,7 @@ namespace BaseGame {
 			foreach (Boom boom in effects) {
 				boom.update(e.Time);
 			}
+			hud.update ();
 
 			//Player input
 			Vector2 vel = new Vector2();
@@ -191,6 +195,7 @@ namespace BaseGame {
 			for (int i = effects.Count - 1; i > -1; i--) {
 				effects[i].draw(e.Time);
 			}
+			hud.draw ();
 
 			SwapBuffers();
 		}

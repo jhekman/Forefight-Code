@@ -1,6 +1,6 @@
 using OpenTK;
 
-namespace BaseGame.Entity {
+namespace Forefight.Entity {
 	public abstract class Entity {
 		private readonly GameView view;
 

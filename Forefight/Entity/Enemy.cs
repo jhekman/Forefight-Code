@@ -20,9 +20,9 @@
 //
 using System.Drawing;
 using OpenTK;
-using BaseGame.Drawing;
+using Forefight.Drawing;
 
-namespace BaseGame.Entity {
+namespace Forefight.Entity {
 	public class Enemy : Entity {
 		protected Player target;
 		Vector2 vel;
