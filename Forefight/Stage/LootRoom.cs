@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using BaseGame;
-using BaseGame.Entity;
+using Forefight;
+using Forefight.Entity;
 
-namespace BaseGame.Stage {
+namespace Forefight.Stage {
 	public class LootRoom : Room {
 		public Boss boss;
 

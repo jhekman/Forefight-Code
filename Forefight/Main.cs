@@ -27,9 +27,9 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
-using BaseGame.Drawing;
+using Forefight.Drawing;
 
-namespace BaseGame {
+namespace Forefight {
 	class Program : IDisposable {
 		private GameWorld world;
 		private GameView view;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using BaseGame;
 using BaseGame.Entity;
 
-namespace BaseGame.Stage {
+namespace Forefight.Stage {
 	public class KeyRoom : Room {
 		private Key key;
 

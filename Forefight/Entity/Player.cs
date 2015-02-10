@@ -23,11 +23,12 @@
 using System.Drawing;
 using OpenTK;
 using OpenTK.Input;
-using BaseGame.Drawing;
+using Forefight.Drawing;
 using System.Collections.Generic;
 using System;
+using OpenTK.Graphics.OpenGL;
 
-namespace BaseGame.Entity {
+namespace Forefight.Entity {
 	public class Player : Entity {
 		public enum Type {
 			FIREBALL = 0,
@@ -38,12 +39,14 @@ namespace BaseGame.Entity {
 
 		public bool ranged = true;
 		public bool useTargeting = false;
-
-		private const float meleeRange = 80;
-		private const int coolDownTime = 20; // Change this value to change cooldown
-		private int coolDown = 0;
+		private const float meleeRange = 70;
+		private const double meleeAngle = Math.PI / 4;
+		private const int coolDownTime = 40; // Change this value to change cooldown
+		private int coolDown = 0; // Do not change this value
+		private int speed = 240;
+		private const int maxHP = 20;
+		private int HP;
 		private Color playerColor = Color.Green; // Color changes when on cooldown
-
 		private Vector2 target;
 		private Enemy targetEnemy;
 		private bool attacking;
@@ -52,76 +55,109 @@ namespace BaseGame.Entity {
 			target = Vector2.Zero;
 			targetEnemy = null;
 			attacking = false;
+			HP = maxHP;
 		}
 
 		public Vector2 Target {
 			get { return target; }
 			set {
 				Vector2 tar = value;
-//				if (tar.Length != 0) 
-//					tar.Normalize();
+				//				if (tar.Length != 0) 
+				//					tar.Normalize();
 				target = tar;
 			}
 		}
 
+		public void takeHit (int damage) {
+			HP -= damage;
+			if (HP <= 0)
+				die();
+		}
+
+		public void die() { // Player Dies
+			View.Effects.Add(new Boom(View, Position, 500)); // Just for now 
+		}
+
+		public float getHealthRatio() {
+			return (float) HP / maxHP;
+		}
+
 		public override void update (double delta){
 			List<Enemy> enemies = View.Enemies;
-			if (!ranged && attacking) {
-				List<Enemy> deads = new List<Enemy>();
-				foreach (Enemy enemy in enemies) {
-					Vector2 relative = enemy.Position - Position;
-					int enemyRadius = enemy.getRadius();
-					if (relative.Length <= meleeRange + enemy.getRadius() && (Math.Abs(Math.Atan2(relative.Y, relative.X) - Math.Atan2(target.Y, target.X)) < Math.PI / 4))
+			if (!ranged) {
+				if (attacking) {
+					List<Enemy> deads = new List<Enemy>();
+					foreach (Enemy enemy in enemies) {
+						Vector2 relative = enemy.Position - Position;
+						float relDist = relative.Length;
+						double relAngle = Math.Atan2(relative.Y, relative.X) - Math.Atan2(target.Y, target.X);
+						relative.X = (float) Math.Cos(relAngle) * relDist;
+						relative.Y = (float) Math.Sin(relAngle) * relDist;
+						int enemyRadius = enemy.getRadius();
+						//Melee Cone
+						if (relative.Length <= meleeRange + enemy.getRadius() && //Within kill radius
+							((meleeAngle >= Math.PI / 2) ? ((meleeAngle == Math.PI / 2) ? //crazy conditional shit
+								//if meleeAngle == Math.PI / 2
+								(relative.X + enemyRadius >= 0) :
+								//if meleeAngle > Math.PI / 2
+								((relative.Y <= Math.Tan(-meleeAngle) * relative.X + enemyRadius) || (relative.Y >= Math.Tan(meleeAngle) * relative.X - enemyRadius))) :
+								//if meleeAngle < Math.PI / 2
+								((relative.Y <= Math.Tan(meleeAngle) * relative.X + enemyRadius) && (relative.Y >= Math.Tan(-meleeAngle) * relative.X - enemyRadius)))) {
 							deads.Add(enemy);
-				}
-				foreach (Enemy enemy in deads) {
-					enemy.die();
+						}
+					}
+					foreach (Enemy enemy in deads) {
+						enemy.dead = true;
+					}
 				}
 			}
 			else {
 				if (useTargeting) {
-					if (attacking && targetEnemy != null) {
-						View.Projectiles.Add(new Projectile(View, Position, targetEnemy.Position));
+					if (targetEnemy != null) {
+						if (targetEnemy.dead == true)
+							targetEnemy = null;
+						else if (attacking) {
+							View.Projectiles.Add(new Projectile(View, Position, targetEnemy.Position, true));
+						}
 					}
-					else {
-						//aim assist targeting
-						double lineOfSight = Math.Atan2(target.X, target.Y);
-						double closest = Math.PI / 4; //no more than 90 degrees of aim assist
-						foreach (Enemy enemy in enemies) {
-							double dir = Math.Atan2(enemy.Position.X - Position.X, enemy.Position.Y - Position.Y);
-							double margin = Math.Abs(dir - lineOfSight);
-							if (margin < closest) {
-								closest = margin;
-								targetEnemy = enemy;
-							}
+					double lineOfSight = Math.Atan2(target.X, target.Y);
+					double closest = meleeAngle; //no more than 90 degrees of aim assist
+
+
+					foreach (Enemy enemy in enemies) {
+						double dir = Math.Atan2(enemy.Position.X - Position.X, enemy.Position.Y - Position.Y);
+						double margin = Math.Abs(dir - lineOfSight);
+						if (margin < closest) {
+							closest = margin;
+							targetEnemy = enemy;
 						}
 					}
 				}
 				else if (attacking) {
-						View.Projectiles.Add(new Projectile(View, Position, new Vector2(View.Mouse.X, View.Mouse.Y)));
+					View.Projectiles.Add(new Projectile(View, Position, new Vector2(View.Mouse.X, View.Mouse.Y), true));
 				}
 			}
 
-				if (coolDown > 0) {
-					coolDown--;
-					if (coolDown == 0)
-						playerColor = Color.Green; 
-				}
+			if (coolDown > 0) {
+				coolDown--;
+				if (coolDown == 0)
+					playerColor = Color.Green; 
+			}
 
-				base.update(delta);
+			base.update(speed * delta);
 		}
 
 		public override void draw (double delta){
 			if (!ranged) {
 				double los = Math.Atan2(target.Y, target.X);
-				Shapes.DrawLine(Position.X, Position.Y, Position.X + ((float) Math.Cos(los + Math.PI / 4) * meleeRange), Position.Y + ((float) Math.Sin(los + Math.PI / 4) * meleeRange), Color.Purple);
-				Shapes.DrawLine(Position.X, Position.Y, Position.X + ((float) Math.Cos(los - Math.PI / 4) * meleeRange), Position.Y + ((float) Math.Sin(los - Math.PI / 4) * meleeRange), Color.Purple);
+				Shapes.DrawLine(Position.X, Position.Y, Position.X + ((float) Math.Cos(los + meleeAngle) * meleeRange), Position.Y + ((float) Math.Sin(los + meleeAngle) * meleeRange), Color.Purple);
+				Shapes.DrawLine(Position.X, Position.Y, Position.X + ((float) Math.Cos(los - meleeAngle) * meleeRange), Position.Y + ((float) Math.Sin(los - meleeAngle) * meleeRange), Color.Purple);
 			}
 			else {
-			Vector2 targetExt = Vector2.Multiply(target, meleeRange);
-			if (useTargeting && targetEnemy != null)
-				Shapes.DrawCircle(targetEnemy.Position.X, targetEnemy.Position.Y, 8, 16, Color.Magenta);
-			Shapes.DrawLine(Position.X, Position.Y, Position.X + targetExt.X, Position.Y + targetExt.Y, Color.Purple); 
+				Vector2 targetExt = Vector2.Multiply(target, meleeRange);
+				if (useTargeting && targetEnemy != null)
+					Shapes.DrawCircle(targetEnemy.Position.X, targetEnemy.Position.Y, 8, 16, Color.Magenta);
+				Shapes.DrawLine(Position.X, Position.Y, Position.X + targetExt.X, Position.Y + targetExt.Y, Color.Purple); 
 			}
 
 			Shapes.DrawCircle(Position.X, Position.Y, 16, 32, playerColor);
@@ -139,4 +175,5 @@ namespace BaseGame.Entity {
 		}
 	}
 }
+
 

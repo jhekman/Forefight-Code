@@ -25,29 +25,25 @@ using OpenTK;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
-using BaseGame.Entity;
+using Forefight.Entity;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
-
-//Tim is now here
-
-
-namespace BaseGame {
+namespace Forefight {
 	public class GameView : GameWindow {
 		GameWorld world;
 		readonly Player player;
 		readonly List<Enemy> enemies;
 		readonly List<Projectile> projectiles;
 		readonly List<Boom> effects;
-		//readonly MouseState[] mouseBuffer;
-		//int mouseBuffIndex;
+		readonly Hud hud;
 		double spawnTime;
-
 		private KeyboardState previousKeys, keys;
+		public static Random rand = new Random();
 
 		public GameView (){
 			world = new GameWorld();
+			Title = "4Fight";
 
 			Size = new Size(1024, 768);
 			GL.LineWidth(4f);
@@ -56,10 +52,8 @@ namespace BaseGame {
 			enemies = new List<Enemy>();
 			projectiles = new List<Projectile>();
 			effects = new List<Boom>();
+			hud = new Hud (this);
 			keys = OpenTK.Input.Keyboard.GetState();
-
-			//mouseBuffer = new MouseState[16];
-			//mouseBuffIndex = 0;
 
 			spawnTime = 0;
 		}
@@ -85,50 +79,56 @@ namespace BaseGame {
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadIdentity();
 			GL.Ortho(ClientRectangle.Left, ClientRectangle.Right,
-			         ClientRectangle.Bottom, ClientRectangle.Top, -1.0, 1.0);
+				ClientRectangle.Bottom, ClientRectangle.Top, -1.0, 1.0);
 			GL.Viewport(ClientRectangle.Size);
 		}
 
+
+		private double totalTime = 0; // for fps counter
+		private int maxCounter = 10;
+		private int counter = 5;
 		protected override void OnRenderFrame (FrameEventArgs e){
+			if (counter > 0) { // fps counter
+				totalTime += e.Time;
+				counter--;
+			}
+			else {
+				Console.WriteLine();
+				Title = "4Fight, " + (int) (maxCounter / totalTime) + " fps";
+				counter = maxCounter;
+				totalTime = 0;
+			}
+
 			//Input states
-		    previousKeys = keys;
+			previousKeys = keys;
 			keys = OpenTK.Input.Keyboard.GetState();
 			MouseState mouse = OpenTK.Input.Mouse.GetState();
-
-			// Timothy, Do we need this code anymore??
-			/*MouseState oldMouse = mouseBuffer[mouseBuffIndex % mouseBuffer.Length];
-			Vector2 mouseDelta = new Vector2(mouse.X - oldMouse.X, mouse.Y - oldMouse.Y);
-			if (mouseDelta.Length > 1E-8F)
-				mouseBuffer[++mouseBuffIndex % mouseBuffer.Length] = mouse;
-
-			MouseState startMouse = mouseBuffer[mouseBuffIndex % mouseBuffer.Length];
-			MouseState endMouse = mouseBuffer[(mouseBuffIndex + 1) % mouseBuffer.Length]; */
 
 			float xdelta = Mouse.X - Player.Position.X;
 			float ydelta = Mouse.Y - Player.Position.Y;
 			//int zdelta = newMouse.Wheel - oldMouse.Wheel;
 
-			//Enemy handling
-			Random rand = new Random();
-			int posx = rand.Next(0, this.Width);
-			int posy = rand.Next(0, this.Height);
-			int size = rand.Next(2, 9);
+			//Enemy spawning for now
+			int posx = rand.Next(200, -200 + this.Width);
+			int posy = rand.Next(200, -200 + this.Height);
 
 			spawnTime += e.Time;
-			if (enemies.Count <= 12 && spawnTime >= 2) {
+			if (enemies.Count < 3 && spawnTime >= 3) {
 				spawnTime = 0;
-				enemies.Add(new Enemy(this, new Vector2(posx, posy), size * size));
+				enemies.Add(new Skeleton(this, new Vector2(posx, posy)));
 			}
 
+			//Updating everything
 			foreach (Enemy enemy in enemies) {
 				enemy.update(e.Time);
 			}
-			foreach (Projectile projectile in projectiles) {
-				projectile.update(e.Time); 
+			for (int i = Projectiles.Count - 1; i > -1; i--) {
+				Projectiles[i].update(e.Time); 
 			}
 			foreach (Boom boom in effects) {
 				boom.update(e.Time);
 			}
+			hud.update ();
 
 			//Player input
 			Vector2 vel = new Vector2();
@@ -146,17 +146,20 @@ namespace BaseGame {
 				vel.X = 0;
 			if (vel.Length > 0)
 				vel.Normalize();
+
 			//Toggle Melee/Ranged
 			if (keys[OpenTK.Input.Key.R] && !previousKeys[OpenTK.Input.Key.R])
 				Player.ranged = !Player.ranged;
+
 			//Toggle Targeting (only affects ranged)
 			if (keys[OpenTK.Input.Key.T] && !previousKeys[OpenTK.Input.Key.T])
 				Player.useTargeting = !Player.useTargeting;
+
 			//Boost button
 			if (keys[OpenTK.Input.Key.Space])
-				vel = Vector2.Multiply(vel, 20);
+				vel = Vector2.Multiply(vel, 10);
 			player.Velocity = vel;
-			player.update(200 * e.Time);
+			player.update(e.Time);
 
 			if (mouse[MouseButton.Left])
 				player.attack(true);
@@ -170,6 +173,7 @@ namespace BaseGame {
 				target = Vector2.Multiply(target, 50);
 				player.Target = target;
 			}
+
 			//ranged
 			//Vector2 target = new Vector2(Mouse.X - player.Position.X, Mouse.Y - player.Position.Y);
 			//player.Target = target;
@@ -191,6 +195,7 @@ namespace BaseGame {
 			for (int i = effects.Count - 1; i > -1; i--) {
 				effects[i].draw(e.Time);
 			}
+			hud.draw ();
 
 			SwapBuffers();
 		}

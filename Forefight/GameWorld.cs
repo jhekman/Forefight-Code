@@ -4,7 +4,7 @@ using Box2DX.Dynamics;
 using Box2DX.Collision;
 using Box2DX.Common;
 
-namespace BaseGame {
+namespace Forefight {
 	public class GameWorld : World {
 
 		public GameWorld () : base (prepareAABB(), new Vec2(0f, 0f), true){

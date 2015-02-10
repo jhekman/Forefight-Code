@@ -22,7 +22,7 @@
 //
 using System;
 
-namespace BaseGame.Entity {
+namespace Forefight.Entity {
 	public class Boss {
 		public Boss (){
 		}

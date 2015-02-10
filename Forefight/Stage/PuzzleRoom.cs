@@ -4,7 +4,7 @@ using BaseGame;
 using BaseGame.Entity;
 using System.Runtime.InteropServices.WindowsRuntime;
 
-namespace BaseGame.Stage {
+namespace Forefight.Stage {
 	public class PuzzleRoom : Room {
 		public PuzzleRoom (Floor floor) : base(floor){
 		}
