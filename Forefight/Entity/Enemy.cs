@@ -54,13 +54,9 @@ namespace Forefight.Entity {
 				_dead = true;
 				View.Enemies.Remove(this);
 				View.Effects.Add(new Boom(View, Position, radius * 2));
-				//				if (radius / 4 > 3) {
-				//					int radi = radius / 4;
-				//					View.Enemies.Add(new Enemy(View, Position + new Vector2(GameView.rand.Next(-radius, radius + 1), GameView.rand.Next(-radius, radius + 1)), radi));
-				//					View.Enemies.Add(new Enemy(View, Position + new Vector2(GameView.rand.Next(-radius, radius + 1), GameView.rand.Next(-radius, radius + 1)), radi));
-				//				}
 			}
 		}
+
 
 		public override void draw (double delta){
 			//Shapes.DrawCircle(Position.X + Velocity.X, Position.Y + Velocity.Y, 8, 16, Color.Red);
