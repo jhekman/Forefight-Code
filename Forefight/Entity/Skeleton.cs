@@ -28,7 +28,8 @@ using Forefight.Drawing;
 namespace Forefight.Entity {
 	public class Skeleton : Enemy {
 		int speed = 80;
-		int keepDistance = 300;
+		int keepDistance = 300; // Skeleton runs away if you get this close
+		int closeDistance = 600; // Skeleton runs to you if you get this far
 		const int coolDownTime = 100;
 		int coolDown = 0;
 
@@ -44,7 +45,18 @@ namespace Forefight.Entity {
 			Vector2 Velocity2 = Vector2.Zero;
 
 			if (coolDown == 0) {
-				View.Projectiles.Add(new Projectile(View, Position, target.Position, false));
+				// Gives the shooting some inaccuracy based on distance squared because ?. The shot will be aimed at any point on a square centered on the player. 
+				// Not a good way of doing it as skeletons will theoretically be better shots diagonally (1.41 times better) then at right angles which makes no sense
+				Random rand = new Random ();
+				int distanceSquared = (int) Math.Pow (Position.X - target.Position.X, 2) + (int) Math.Pow (Position.Y - target.Position.Y, 2);
+				int randX = rand.Next (distanceSquared / 4000); // Make the numbers here bigger for more accuracy
+				int randY = rand.Next (distanceSquared / 4000); // or smaller for less accuracy
+				Vector2 v = target.Position;
+				v.X += randX - (distanceSquared / 8000); // Keep the two numbers here double the previous two numbers. This is so the skeleton can miss both right and left equally.
+				v.Y += randY - (distanceSquared / 8000);
+
+				// Shoots
+				View.Projectiles.Add(new Projectile(View, Position, v, false));
 				coolDown = coolDownTime;
 			}
 			else
@@ -90,8 +102,13 @@ namespace Forefight.Entity {
 
 			if (relative.Length < keepDistance) { // Run From Player
 				Vector2 vel = relative;
-				vel.Normalize();
-				Velocity = -1 * Vector2.Multiply(vel, speed);
+				vel.Normalize ();
+				Velocity = -1 * Vector2.Multiply (vel, speed);
+			}
+			else if (relative.Length > closeDistance) { // Run to Player if too far away
+				Vector2 vel = relative;
+				vel.Normalize ();
+				Velocity = Vector2.Multiply (vel, speed);
 			}
 			else
 				Velocity = Vector2.Zero;

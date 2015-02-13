@@ -37,6 +37,7 @@ namespace Forefight {
 		readonly List<Projectile> projectiles;
 		readonly List<Boom> effects;
 		readonly Hud hud;
+		bool pause;
 		double spawnTime;
 		private KeyboardState previousKeys, keys;
 		public static Random rand = new Random();
@@ -53,6 +54,7 @@ namespace Forefight {
 			projectiles = new List<Projectile>();
 			effects = new List<Boom>();
 			hud = new Hud (this);
+			pause = false;
 			keys = OpenTK.Input.Keyboard.GetState();
 
 			spawnTime = 0;
@@ -85,8 +87,8 @@ namespace Forefight {
 
 
 		private double totalTime = 0; // for fps counter
-		private int maxCounter = 10;
-		private int counter = 5;
+		private int maxCounter = 30;
+		private int counter = 15;
 		protected override void OnRenderFrame (FrameEventArgs e){
 			if (counter > 0) { // fps counter
 				totalTime += e.Time;
@@ -119,18 +121,21 @@ namespace Forefight {
 			}
 
 			//Updating everything
-			foreach (Enemy enemy in enemies) {
-				enemy.update(e.Time);
+			if (!pause) { // Stops updating if game paused
+				foreach (Enemy enemy in enemies) {
+					enemy.update (e.Time);
+				}
+				for (int i = Projectiles.Count - 1; i > -1; i--) {
+					Projectiles [i].update (e.Time); 
+				}
+				foreach (Boom boom in effects) {
+					boom.update (e.Time);
+				}
+				hud.update ();
+				player.update (e.Time);
 			}
-			for (int i = Projectiles.Count - 1; i > -1; i--) {
-				Projectiles[i].update(e.Time); 
-			}
-			foreach (Boom boom in effects) {
-				boom.update(e.Time);
-			}
-			hud.update ();
 
-			//Player input
+			//Player WASD input
 			Vector2 vel = new Vector2();
 			if (keys[OpenTK.Input.Key.S])
 				vel.Y = 1;
@@ -159,9 +164,13 @@ namespace Forefight {
 			if (keys[OpenTK.Input.Key.Space])
 				vel = Vector2.Multiply(vel, 10);
 			player.Velocity = vel;
-			player.update(e.Time);
 
-			if (mouse[MouseButton.Left])
+			//Pause button
+			if (keys [OpenTK.Input.Key.P] && !previousKeys[OpenTK.Input.Key.P])
+				pause = !pause;
+
+			//Left Click
+			if (mouse[MouseButton.Left] && !pause)
 				player.attack(true);
 			else
 				player.attack(false);
@@ -174,30 +183,29 @@ namespace Forefight {
 				player.Target = target;
 			}
 
-			//ranged
-			//Vector2 target = new Vector2(Mouse.X - player.Position.X, Mouse.Y - player.Position.Y);
-			//player.Target = target;
-
 			//Actual draw
-			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+			if (!pause) { //Stops drawing this if paused
+				GL.Clear (ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-			GL.MatrixMode(MatrixMode.Modelview);
-			GL.LoadIdentity();
+				GL.MatrixMode (MatrixMode.Modelview);
+				GL.LoadIdentity ();
 
-			player.draw(e.Time);
 
-			foreach (Enemy enemy in enemies) {
-				enemy.draw(e.Time);
+				player.draw (e.Time);
+				foreach (Enemy enemy in enemies) {
+					enemy.draw (e.Time);
+				}
+				foreach (Projectile projectile in projectiles) {
+					projectile.draw (e.Time);
+				}
+				for (int i = effects.Count - 1; i > -1; i--) {
+					effects [i].draw (e.Time);
+				}
+				hud.draw ();
+			
+
+				SwapBuffers ();
 			}
-			foreach (Projectile projectile in projectiles) {
-				projectile.draw(e.Time);
-			}
-			for (int i = effects.Count - 1; i > -1; i--) {
-				effects[i].draw(e.Time);
-			}
-			hud.draw ();
-
-			SwapBuffers();
 		}
 	}
 }

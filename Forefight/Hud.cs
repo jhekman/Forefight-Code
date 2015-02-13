@@ -5,7 +5,7 @@ using Forefight.Entity;
 namespace Forefight {
 	public class Hud {
 		private GameView view;
-		private const int lengthOfHealthBar = 50; //length of health bar in pixels 
+		private const int lengthOfHealthBar = 200; //length of health bar in pixels 
 		private const int heightOfHealthBar = 20; //height of health bar in pixels
 		private float healthRatio = 1; //How full the bar should be
 		private int xPos = 10; // X coordinate of top left vertex of health bar

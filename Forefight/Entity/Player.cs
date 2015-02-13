@@ -44,7 +44,7 @@ namespace Forefight.Entity {
 		private const int coolDownTime = 40; // Change this value to change cooldown
 		private int coolDown = 0; // Do not change this value
 		private int speed = 240;
-		private const int maxHP = 20;
+		private const int maxHP = 40;
 		private int HP;
 		private Color playerColor = Color.Green; // Color changes when on cooldown
 		private Vector2 target;
