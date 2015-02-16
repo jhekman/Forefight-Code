@@ -1,6 +1,11 @@
 ﻿<Properties StartupItem="Forefight\Forefight.csproj" GitUserInfo="UsingMD">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="c:\Users\jhekman\Desktop\l\Forefight\GameView.cs">
+    <Files>
+      <File FileName="Forefight\Entity\Bears.cs" Line="22" Column="17" />
+      <File FileName="c:\Users\jhekman\Desktop\l\Forefight\GameView.cs" Line="24" Column="7" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

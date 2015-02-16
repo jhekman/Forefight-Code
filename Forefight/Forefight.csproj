@@ -57,6 +57,7 @@
     <Compile Include="Drawing\Shapes.cs" />
     <Compile Include="Entity\Skeleton.cs" />
     <Compile Include="Hud.cs" />
+    <Compile Include="Entity\Bears.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Stage\" />

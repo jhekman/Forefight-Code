@@ -117,7 +117,7 @@ namespace Forefight {
 			spawnTime += e.Time;
 			if (enemies.Count < 3 && spawnTime >= 3) {
 				spawnTime = 0;
-				enemies.Add(new Skeleton(this, new Vector2(posx, posy)));
+				enemies.Add(new Bear(this, new Vector2(posx, posy)));
 			}
 
 			//Updating everything

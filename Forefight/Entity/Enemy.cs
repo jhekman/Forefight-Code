@@ -25,7 +25,6 @@ using Forefight.Drawing;
 namespace Forefight.Entity {
 	public class Enemy : Entity {
 		protected Player target;
-		Vector2 vel;
 		int radius; // used for hitbox
 		int speed;
 		private bool _dead;
@@ -65,7 +64,7 @@ namespace Forefight.Entity {
 
 		public override void update (double delta){
 			Vector2 tar = target.Position;
-			vel = new Vector2(tar.X - Position.X, tar.Y - Position.Y);
+			Vector2 vel = new Vector2(tar.X - Position.X, tar.Y - Position.Y);
 			vel.Normalize();
 			vel = Vector2.Multiply(vel, speed);
 
